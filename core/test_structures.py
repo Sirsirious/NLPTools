@@ -1,6 +1,6 @@
 import pytest
 
-from .structures import Document, Token, Sentence, sentencize, tokenize
+from .structures import Document, sentencize, tokenize
 
 def test_Document_Token_Sentence():
     """
