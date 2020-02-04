@@ -62,6 +62,11 @@ class Sentence():
     tokens : list of Token
         The list of Tokens after tokenizing.
 
+    Methods
+    -------
+    get: str
+        Returns the string representation of the Sentence.
+
     """
 
     def __init__(self, start_position, end_position, raw_document_reference):
@@ -84,14 +89,20 @@ class Sentence():
         self.tokens = tokenize(self._document_string[self.start_pos:self.end_pos])
         self._index = 0
 
+    def get(self):
+        return self._document_string[self.start_pos:self.end_pos]
+
     def __getitem__(self, key):
         return self.tokens[key]
 
     def __repr__(self):
-        return self._document_string[self.start_pos:self.end_pos]
+        return self.get()
 
     def __str__(self):
-        return self._document_string[self.start_pos:self.end_pos]
+        return self.get()
+
+    def __eq__(self, other):
+        return self.get() == other
 
     def __iter__(self):
         return self
@@ -120,6 +131,10 @@ class Token():
         Is the Token the start of a Sentence?
     EOS: boolean
         Is the Token the end of a Sentence?
+    Methods
+    -------
+    get: str
+        Returns the string representation of the Token.
     """
 
     def __init__(self, start_position, end_position, raw_sentence_reference, SOS = False, EOS = False):
@@ -146,7 +161,7 @@ class Token():
         self.SOS = SOS
         self.EOS = EOS
 
-    def __repr__(self):
+    def get(self):
         if self.SOS:
             return '<SOS>'
         elif self.EOS:
@@ -154,13 +169,14 @@ class Token():
         else:
             return self._sentence_string[self.start_pos:self.end_pos]
 
+    def __repr__(self):
+        return self.get()
+
     def __str__(self):
-        if self.SOS:
-            return '<SOS>'
-        elif self.EOS:
-            return '<EOS>'
-        else:
-            return self._sentence_string[self.start_pos:self.end_pos]
+        return self.get()
+
+    def __eq__(self, other):
+        return self.get() == other
 
 ## Static Functions
 
