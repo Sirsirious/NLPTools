@@ -3,7 +3,7 @@ import sys, re
 DEFAULT_SENTENCE_BOUNDARIES = ['(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)','\.{2,}','\!+','\:+','\?+']
 DEFAULT_PUNCTUATIONS = ['(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)','\.{2,}','\!+','\:+','\?+','\,+', r'\(|\)|\[|\]|\{|\}|\<|\>']
 
-class Document():
+class Document:
     """
     The Document is the main structure of our NLP process. It wraps the document being treated. A Document is composed of sentences and is iterable.
     Attributes
@@ -46,7 +46,7 @@ class Document():
             return result
         raise StopIteration
 
-class Sentence():
+class Sentence:
     """
     Sentences are divisions of a Document. They are usually separated by punctuations. Sentences are divided into tokens. One can iterate over sentence tokens.
     Attributes
@@ -114,7 +114,7 @@ class Sentence():
             return result
         raise StopIteration
 
-class Token():
+class Token:
     """
     Tokens are divisions of a Sentence. They are usually separated by whitespaces. Punctuations are also tokens.
     Attributes

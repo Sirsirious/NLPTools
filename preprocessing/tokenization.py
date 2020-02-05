@@ -4,7 +4,7 @@ import re
 sys.path.insert(1, '../core')
 from core.segments import Document, Sentence, Token, StringWrapper
 
-class DummySentencizer():
+class DummySentencizer:
     """
     The DummySentencizer is a simple way of sentencizing. It is based on default punctuation characters and uses a special token for splitting.
 
@@ -53,7 +53,7 @@ class DummySentencizer():
             return result
         raise StopIteration
 
-class DummyTokenizer():
+class DummyTokenizer:
     """
     The DummyTokenizer is a simple way of tokenizing. It is based on whitespaces and hyphens and uses a special token for splitting.
     It also does some processing to separate punctuation marks from words.
