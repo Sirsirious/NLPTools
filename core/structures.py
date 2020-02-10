@@ -46,6 +46,9 @@ class Document:
             return result
         raise StopIteration
 
+    def __len__(self):
+        return len(self.sentences)
+
 class Sentence:
     """
     Sentences are divisions of a Document. They are usually separated by punctuations. Sentences are divided into tokens. One can iterate over sentence tokens.
@@ -113,6 +116,9 @@ class Sentence:
             self._index+=1
             return result
         raise StopIteration
+
+    def __len__(self):
+        return len(self.tokens)
 
 class Token:
     """
