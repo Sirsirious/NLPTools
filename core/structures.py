@@ -1,7 +1,8 @@
 import sys, re
 
-DEFAULT_SENTENCE_BOUNDARIES = ['(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)','\.{2,}','\!+','\:+','\?+']
-DEFAULT_PUNCTUATIONS = ['(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)','\.{2,}','\!+','\:+','\?+','\,+', r'\(|\)|\[|\]|\{|\}|\<|\>']
+DEFAULT_SENTENCE_BOUNDARIES = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)',r'\.{2,}',r'\!+',r'\:+',r'\?+']
+DEFAULT_PUNCTUATIONS = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)',
+                        r'\.{2,}',r'\!+',r'\:+',r'\?+',r'\,+',r'\(|\)|\[|\]|\{|\}|\<|\>']
 
 class Document:
     """
@@ -137,6 +138,8 @@ class Token:
         Is the Token the start of a Sentence?
     EOS: boolean
         Is the Token the end of a Sentence?
+    PoS: string or None
+        The token predicted Part of Speech.
     Methods
     -------
     get: str
@@ -166,6 +169,9 @@ class Token:
         self.previous_token = None
         self.SOS = SOS
         self.EOS = EOS
+        self.PoS = None
+        self.raw = self._sentence_string[self.start_pos:self.end_pos]
+        self.repr = self.raw
 
     def get(self):
         if self.SOS:
@@ -173,7 +179,7 @@ class Token:
         elif self.EOS:
             return '<EOS>'
         else:
-            return self._sentence_string[self.start_pos:self.end_pos]
+            return self.repr
 
     def __repr__(self):
         return self.get()
@@ -203,7 +209,7 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     working_document = raw_input_document
     punctuation_patterns = sentence_boundaries
     for punct in punctuation_patterns:
-        working_document = re.sub(punct, '\g<0>'+delimiter_token, working_document, flags=re.UNICODE)
+        working_document = re.sub(punct, r'\g<0>'+delimiter_token, working_document, flags=re.UNICODE)
     list_of_string_sentences = [x.strip() for x in working_document.split(delimiter_token) if x.strip() != ""]
     list_of_sentences = []
     previous = None
@@ -220,7 +226,8 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
             previous = new_sentence
     return list_of_sentences
 
-def tokenize(raw_input_sentence, join_split_text = True, split_text_char = '\-', punctuation_patterns= DEFAULT_PUNCTUATIONS, split_characters = r'\s|\t|\n|\r', delimiter_token='<SPLIT>'):
+def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-',
+             punctuation_patterns= DEFAULT_PUNCTUATIONS, split_characters = r'\s|\t|\n|\r', delimiter_token='<SPLIT>'):
     """
     Tokenizes a string based on token boundaries. Returns a list of Tokens.
 
@@ -239,16 +246,16 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = '\-',
         A string with regex for split characters. These are used to do tokenization after the sentence is preprocessed.
         Defaults to any whitespace (\s), any tab char (\t), newlines (\n) and carriage returns (\r).
     delimiter_token: str, optional
-        The token used for sentence segmentation. Usually a "agnostic" token. Defaults to <SPLIT>.
+        The token used for sentence segmentation. Usually a 'agnostic' token. Defaults to <SPLIT>.
     """
 
     working_sentence = raw_input_sentence
     #First deal with possible word splits:
     if join_split_text:
-        working_sentence = re.sub('[a-z]+('+split_text_char+'[\n])[a-z]+','', working_sentence)
+        working_sentence = re.sub(r'[a-z]+('+split_text_char+r'[\n])[a-z]+','', working_sentence)
     #Escape punctuation
     for punct in punctuation_patterns:
-        working_sentence = re.sub(punct, " \g<0> ", working_sentence)
+        working_sentence = re.sub(punct, r" \g<0> ", working_sentence)
     #Split at any split_characters
     working_sentence = re.sub(split_characters, delimiter_token, working_sentence)
     list_of_token_strings = [x.strip() for x in working_sentence.split(delimiter_token) if x.strip() !=""]

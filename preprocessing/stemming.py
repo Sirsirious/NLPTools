@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('../')
-from core.structures import Token
+from ..core.structures import Token
 
 class AbstractStemmer:
     """An Interface to allow for other stemmers to be built. If you want to implement your stemmer, inherit from this class and implement the stem method."""
@@ -313,7 +313,7 @@ class PorterStemmer(AbstractStemmer):
         stem: str
             The stem to be further stemmed.
         """
-        
+
         temp = stem
         #Step 5a
         if self._det_m(temp)>1 and temp.endswith('e'):
