@@ -1,6 +1,6 @@
 import pytest
 
-from word_utils import inflect_noun_singular
+from .word_utils import inflect_noun_singular, levenshtein_distance, SimpleSpellCorrector
 
 def test_inflect_noun_simple():
     cases = ['cars','houses','books','birds','pencils']
@@ -59,3 +59,28 @@ def test_inflect_num():
     cases = 3
     expected = '3'
     assert inflect_noun_singular(cases) == expected
+
+# Levensthein distance
+def test_levenshtein():
+    cases = [('cat','cats'),('zip','zipper'),('a','a'), ('words with space', 'word with space')]
+    expected = [1,3,0,1]
+    for idx in range(len(cases)):
+        assert levenshtein_distance(cases[idx][0], cases[idx][1]) == expected[idx]
+
+def test_levenshtein_empty():
+    case = ('','')
+    expected = 0
+    assert levenshtein_distance(case[0],case[1])==expected
+
+def test_levenshtein_numbers():
+    case = (1,'')
+    expected = 1
+    assert levenshtein_distance(case[0],case[1])==expected
+"""
+#Test spellchecker
+def test_simple_spell_checker():
+    sc = SimpleSpellCorrector()
+    cases = [('cat','cat'),('sugar','sugar'),('a','a'), ('bonana', 'banana'), ('killz', 'kills'), ('drakness','darkness')]
+    for case in cases:
+        assert sc.correct(case[0]) == case[1]
+"""
