@@ -17,7 +17,7 @@ class Normalizer:
             return ''
         correction = str(text)
         correction = re.sub(r'([!?,;])\1+', r'\1', correction)
-        correction = re.sub(r'\.{1,}', r'...', correction)
+        correction = re.sub(r'\.{2,}', r'...', correction)
         return correction
 
     def number_to_text(text):
