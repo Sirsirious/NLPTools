@@ -1,4 +1,5 @@
 import pytest
+from pytest import raises
 
 from .structures import Document, sentencize, tokenize
 
@@ -37,6 +38,9 @@ def test_sentencize():
     text = 'The number of pi is usually summarized to 3.14 for the sake of simplicity. The greek letter pi was adopted by William Jones in 1706. Nice, right? All human beings are born free and equal in dignity and rights. .15 ... okay. All human beings are born free and equal in dignity and rights. ok . a'
     assert len(sentencize(text)) == 9
 
+def test_sentencize_empty():
+    raises(AttributeError, sentencize, '')
+
 def test_tokenize():
     """
     This test is designed to verify the direct functioning of the tokenize function with some use cases. It is also designed to test internal functioning of Token creation.
@@ -49,3 +53,6 @@ def test_tokenize():
     assert tokens[3].next_token==tokens[4]
     assert tokens[4].previous_token == tokens[3]
     assert tokens[-2]=='.'
+
+def test_tokenize_empty():
+    raises(AttributeError, tokenize, '')

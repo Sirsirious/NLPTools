@@ -206,6 +206,8 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     delimiter_token: str, optional
         The token used for document segmentation. Usually a "agnostic" token. Defaults to <SPLIT>.
     """
+    if raw_input_document is None or raw_input_document == '':
+        raise AttributeError("Empty document string passed as input. Please, verify your input.")
     working_document = raw_input_document
     punctuation_patterns = sentence_boundaries
     for punct in punctuation_patterns:
@@ -248,7 +250,8 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-'
     delimiter_token: str, optional
         The token used for sentence segmentation. Usually a 'agnostic' token. Defaults to <SPLIT>.
     """
-
+    if raw_input_sentence is None or raw_input_sentence == '':
+        raise AttributeError("Empty sentence string passed as input. Please, verify your input.")
     working_sentence = raw_input_sentence
     #First deal with possible word splits:
     if join_split_text:
