@@ -196,15 +196,16 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     """
     Sentencizes a string based on sentence boundaries. Returns a list of Sentences.
 
-    Parameters
-    ----------
-    raw_input_document: str
-        The raw input document in a string format.
-    sentence_boundaries: list of str, optional
-        A list of regex used to delimit sentence boundaries. Default regex includes correct period splitting, reticences, exclamation mark, question mark and colons.
-        The default can be accessed by the global variable DEFAULT_SENTENCE_BOUNDARIES.
-    delimiter_token: str, optional
-        The token used for document segmentation. Usually a "agnostic" token. Defaults to <SPLIT>.
+    Arguments:
+        raw_input_document: str
+            The raw input document in a string format.
+        sentence_boundaries: list of str, optional
+            A list of regex used to delimit sentence boundaries. Default regex includes correct period splitting, reticences, exclamation mark, question mark and colons.
+            The default can be accessed by the global variable DEFAULT_SENTENCE_BOUNDARIES.
+        delimiter_token: str, optional
+            The token used for document segmentation. Usually a "agnostic" token. Defaults to <SPLIT>.
+    Returns:
+        list of Sentence: a list of sentences generated from raw_input_document.
     """
     if raw_input_document is None or raw_input_document == '':
         raise AttributeError("Empty document string passed as input. Please, verify your input.")
@@ -233,22 +234,24 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-'
     """
     Tokenizes a string based on token boundaries. Returns a list of Tokens.
 
-    Parameters
-    ----------
-    raw_input_sentence: str
-        The raw input Sentence in a string format.
-    join_split_text: boolean, optional
-        Wheter to try to join multi-line text splits, like in the case of "sen-\ntence". Defaults to True.
-    split_text_char: str, optional
-        The split char used for checking and joining split strings. Defaults to hyphen.
-    punctuation_patterns: list of str, optional
-        A list of regex used to turn punctuations into tokens. Aside from sentence boundaries, also includes commas and parenthesis.
-        The default can be accessed by the global variable DEFAULT_PUNCTUATIONS.
-    split_characters: str, optional
-        A string with regex for split characters. These are used to do tokenization after the sentence is preprocessed.
-        Defaults to any whitespace (\s), any tab char (\t), newlines (\n) and carriage returns (\r).
-    delimiter_token: str, optional
-        The token used for sentence segmentation. Usually a 'agnostic' token. Defaults to <SPLIT>.
+    Arguments:
+        raw_input_sentence: str
+            The raw input Sentence in a string format.
+        join_split_text: boolean, optional
+            Whether to try to join multi-line text splits, like in the case of "sen-\ntence". Defaults to True.
+        split_text_char: str, optional
+            The split char used for checking and joining split strings. Defaults to hyphen.
+        punctuation_patterns: list of str, optional
+            A list of regex used to turn punctuations into tokens. Aside from sentence boundaries, also includes commas and parenthesis.
+            The default can be accessed by the global variable DEFAULT_PUNCTUATIONS.
+        split_characters: str, optional
+            A string with regex for split characters. These are used to do tokenization after the sentence is preprocessed.
+            Defaults to any whitespace (\s), any tab char (\t), newlines (\n) and carriage returns (\r).
+        delimiter_token: str, optional
+            The token used for sentence segmentation. Usually a 'agnostic' token. Defaults to <SPLIT>.
+
+    Returns:
+        list of Token: a list of tokens generated from raw_input_sentence, added by a starting SOS token and an ending EOS token.
     """
     if raw_input_sentence is None or raw_input_sentence == '':
         raise AttributeError("Empty sentence string passed as input. Please, verify your input.")
@@ -278,3 +281,40 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-'
         eos.previous_token = previous
         list_of_tokens.append(eos)
     return list_of_tokens
+
+def untokenize(token_list):
+    """
+    Untokenizes a token list, turning it back to a string. Deals with SOS and EOS tokens, plus helps with correct punctuation addition.
+
+    Arguments:
+        token_list: list of Token
+            The token list to be untokenized.
+
+    Returns:
+        string: the joint form of the Token list.
+
+    Raises:
+        TypeError: if the input is not a list;
+        TypeError: if the input is not a list of Token.
+    """
+    if not isinstance(token_list, list):
+        raise TypeError("Expected to recieve list of tokens. {} passed instead".format(type(token_list)))
+    if len(token_list) < 1:
+        return ""
+    if not isinstance(token_list[0], Token):
+        raise TypeError("Expected to recieve list of tokens. List of {} passed instead".format(type(token_list[0])))
+    startpos = 0
+    endpos = len(token_list)
+    if len(token_list)<3:
+        return " ".join(token_list)
+    if token_list[0] == "<SOS>":
+        startpos=1
+    if token_list[-1]== "<EOS>":
+        endpos = -1
+    punct = "!:?.;,"
+    final_string = ""
+    for token in token_list[startpos:endpos]:
+        if not token.get() in punct:
+            final_string+=" "
+        final_string+=token.get()
+    return final_string.strip()

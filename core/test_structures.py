@@ -1,7 +1,7 @@
 import pytest
 from pytest import raises
 
-from .structures import Document, sentencize, tokenize
+from .structures import Document, sentencize, tokenize, untokenize
 
 def test_Document_Token_Sentence():
     """
@@ -56,3 +56,17 @@ def test_tokenize():
 
 def test_tokenize_empty():
     raises(AttributeError, tokenize, '')
+
+def test_untokenize():
+    case = tokenize("The number of pi is usually summarized to 3.14 for the sake of simplicity. The greek letter pi was adopted by William Jones in 1706.")
+    expected = "The number of pi is usually summarized to 3.14 for the sake of simplicity. The greek letter pi was adopted by William Jones in 1706."
+    assert untokenize(case) == expected
+
+def test_emtpy_token_list_untokenize():
+    case = []
+    expected = ""
+    assert untokenize(case) == expected
+
+def test_wrong_input_untokenize():
+    case = 1
+    raises(TypeError, untokenize, case)
