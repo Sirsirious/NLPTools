@@ -33,8 +33,8 @@ def test_sentencize():
     """
     This test is designed to verify the direct functioning of the sentencize function with some use cases.
     """
-    text = 'All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood...'
-    assert len(sentencize(text)) == 2
+    text = 'All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood... Very good.\n Its good'
+    assert len(sentencize(text)) == 4
     text = 'The number of pi is usually summarized to 3.14 for the sake of simplicity. The greek letter pi was adopted by William Jones in 1706. Nice, right? All human beings are born free and equal in dignity and rights. .15 ... okay. All human beings are born free and equal in dignity and rights. ok . a'
     assert len(sentencize(text)) == 9
 

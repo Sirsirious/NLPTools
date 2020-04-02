@@ -1,8 +1,9 @@
 import sys, re
 
-DEFAULT_SENTENCE_BOUNDARIES = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)',r'\.{2,}',r'\!+',r'\:+',r'\?+']
+DEFAULT_SENTENCE_BOUNDARIES = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)(?![\n\r]+)',
+                               r'\.{2,}',r'\!+',r'\:+',r'\?+',r'[\n\r]+']
 DEFAULT_PUNCTUATIONS = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)',
-                        r'\.{2,}',r'\!+',r'\:+',r'\?+',r'\,+',r'\(|\)|\[|\]|\{|\}|\<|\>']
+                        r'\.{2,}',r'\!+',r'\:+',r'\?+',r'\,+',r'\(|\)|\[|\]|\{|\}|\<|\>',r'\r\n|\r|\n']
 
 class Document:
     """
@@ -203,7 +204,7 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
             A list of regex used to delimit sentence boundaries. Default regex includes correct period splitting, reticences, exclamation mark, question mark and colons.
             The default can be accessed by the global variable DEFAULT_SENTENCE_BOUNDARIES.
         delimiter_token: str, optional
-            The token used for document segmentation. Usually a "agnostic" token. Defaults to <SPLIT>.
+            The token used for document segmentation. Usually an "agnostic" token. Defaults to <SPLIT>.
     Returns:
         list of Sentence: a list of sentences generated from raw_input_document.
     """
@@ -213,7 +214,7 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     punctuation_patterns = sentence_boundaries
     for punct in punctuation_patterns:
         working_document = re.sub(punct, r'\g<0>'+delimiter_token, working_document, flags=re.UNICODE)
-    list_of_string_sentences = [x.strip() for x in working_document.split(delimiter_token) if x.strip() != ""]
+    list_of_string_sentences = [x.strip(" ") for x in working_document.split(delimiter_token) if x.strip(" ") != ""]
     list_of_sentences = []
     previous = None
     for sent in list_of_string_sentences:
@@ -230,7 +231,7 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     return list_of_sentences
 
 def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-',
-             punctuation_patterns= DEFAULT_PUNCTUATIONS, split_characters = r'\s|\t|\n|\r', delimiter_token='<SPLIT>'):
+             punctuation_patterns= DEFAULT_PUNCTUATIONS, split_characters = r'[ \t]+', delimiter_token='<SPLIT>'):
     """
     Tokenizes a string based on token boundaries. Returns a list of Tokens.
 
@@ -264,7 +265,7 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-'
         working_sentence = re.sub(punct, r" \g<0> ", working_sentence)
     #Split at any split_characters
     working_sentence = re.sub(split_characters, delimiter_token, working_sentence)
-    list_of_token_strings = [x.strip() for x in working_sentence.split(delimiter_token) if x.strip() !=""]
+    list_of_token_strings = [x.strip(" ") for x in working_sentence.split(delimiter_token) if x.strip(" ") !=""]
     previous = Token(0,0,raw_input_sentence, SOS=True)
     list_of_tokens = [previous]
     for token in list_of_token_strings:
@@ -306,15 +307,15 @@ def untokenize(token_list):
     startpos = 0
     endpos = len(token_list)
     if len(token_list)<3:
-        return " ".join(token_list)
+        return (" ".join([token.get() for token in token_list])).strip(" ")
     if token_list[0] == "<SOS>":
         startpos=1
     if token_list[-1]== "<EOS>":
         endpos = -1
-    punct = "!:?.;,"
+    punct = "!:?.;,\n"
     final_string = ""
     for token in token_list[startpos:endpos]:
         if not token.get() in punct:
             final_string+=" "
         final_string+=token.get()
-    return final_string.strip()
+    return final_string.strip(" ")

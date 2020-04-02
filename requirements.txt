@@ -1,3 +1,4 @@
 sklearn-crfsuite==0.3.6
 numpy==1.17.5
-pyspellchecker==0.5.4
+tqdm==4.43.0
+symspellpy=6.5.2
