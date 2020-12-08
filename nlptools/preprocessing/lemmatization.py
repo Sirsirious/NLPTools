@@ -1,6 +1,6 @@
 import pickle, os
 
-from ..utils.word_utils import inflect_noun_singular
+from nlptools.utils.word_utils import inflect_noun_singular
 
 class AbstractLemmatizer:
     def lemmatize():
@@ -8,7 +8,7 @@ class AbstractLemmatizer:
 
 class DictionaryLemmatizer(AbstractLemmatizer):
 
-    dict_directory = os.path.join(os.path.dirname(__file__),"../preloaded/dictionaries/lemmas/word_lemma_dict.p")
+    dict_directory = os.path.join(os.path.dirname(__file__), "../preloaded/dictionaries/lemmas/word_lemma_dict.p")
 
     def __init__(self):
         self.lemma_dict = pickle.load(open(self.dict_directory,'rb'))

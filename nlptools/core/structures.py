@@ -1,9 +1,10 @@
-import sys, re
+import re
 
 DEFAULT_SENTENCE_BOUNDARIES = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)(?![\n\r]+)',
-                               r'\.{2,}',r'\!+',r'\:+',r'\?+',r'[\n\r]+']
+                               r'\.{2,}', r'\!+', r'\:+', r'\?+', r'[\n\r]+']
 DEFAULT_PUNCTUATIONS = [r'(?<=[0-9]|[^0-9.])(\.)(?=[^0-9.]|[^0-9.]|[\s]|$)',
-                        r'\.{2,}',r'\!+',r'\:+',r'\?+',r'\,+',r'\(|\)|\[|\]|\{|\}|\<|\>',r'\r\n|\r|\n']
+                        r'\.{2,}', r'\!+', r'\:+', r'\?+', r'\,+', r'\(|\)|\[|\]|\{|\}|\<|\>', r'\r\n|\r|\n']
+
 
 class Document:
     """
@@ -44,12 +45,13 @@ class Document:
     def __next__(self):
         if self._index < len(self.sentences):
             result = self.sentences[self._index]
-            self._index+=1
+            self._index += 1
             return result
         raise StopIteration
 
     def __len__(self):
         return len(self.sentences)
+
 
 class Sentence:
     """
@@ -115,12 +117,13 @@ class Sentence:
     def __next__(self):
         if self._index < len(self.tokens):
             result = self.tokens[self._index]
-            self._index+=1
+            self._index += 1
             return result
         raise StopIteration
 
     def __len__(self):
         return len(self.tokens)
+
 
 class Token:
     """
@@ -147,7 +150,7 @@ class Token:
         Returns the string representation of the Token.
     """
 
-    def __init__(self, start_position, end_position, raw_sentence_reference, SOS = False, EOS = False):
+    def __init__(self, start_position, end_position, raw_sentence_reference, SOS=False, EOS=False):
         """
         Parameters
         ----------
@@ -191,9 +194,10 @@ class Token:
     def __eq__(self, other):
         return self.get() == other
 
+
 ## Static Functions
 
-def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDARIES, delimiter_token='<SPLIT>'):
+def sentencize(raw_input_document, sentence_boundaries=DEFAULT_SENTENCE_BOUNDARIES, delimiter_token='<SPLIT>'):
     """
     Sentencizes a string based on sentence boundaries. Returns a list of Sentences.
 
@@ -213,13 +217,13 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
     working_document = raw_input_document
     punctuation_patterns = sentence_boundaries
     for punct in punctuation_patterns:
-        working_document = re.sub(punct, r'\g<0>'+delimiter_token, working_document, flags=re.UNICODE)
+        working_document = re.sub(punct, r'\g<0>' + delimiter_token, working_document, flags=re.UNICODE)
     list_of_string_sentences = [x.strip(" ") for x in working_document.split(delimiter_token) if x.strip(" ") != ""]
     list_of_sentences = []
     previous = None
     for sent in list_of_string_sentences:
         start_pos = raw_input_document.find(sent)
-        end_pos = start_pos+len(sent)
+        end_pos = start_pos + len(sent)
         new_sentence = Sentence(start_pos, end_pos, raw_input_document)
         list_of_sentences.append(new_sentence)
         if previous == None:
@@ -230,8 +234,9 @@ def sentencize(raw_input_document, sentence_boundaries = DEFAULT_SENTENCE_BOUNDA
             previous = new_sentence
     return list_of_sentences
 
-def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-',
-             punctuation_patterns= DEFAULT_PUNCTUATIONS, split_characters = r'[ \t]+', delimiter_token='<SPLIT>'):
+
+def tokenize(raw_input_sentence, join_split_text=True, split_text_char=r'\-',
+             punctuation_patterns=DEFAULT_PUNCTUATIONS, split_characters=r'[ \t]+', delimiter_token='<SPLIT>'):
     """
     Tokenizes a string based on token boundaries. Returns a list of Tokens.
 
@@ -257,31 +262,32 @@ def tokenize(raw_input_sentence, join_split_text = True, split_text_char = r'\-'
     if raw_input_sentence is None or raw_input_sentence == '':
         raise AttributeError("Empty sentence string passed as input. Please, verify your input.")
     working_sentence = raw_input_sentence
-    #First deal with possible word splits:
+    # First deal with possible word splits:
     if join_split_text:
-        working_sentence = re.sub(r'[a-z]+('+split_text_char+r'[\n])[a-z]+','', working_sentence)
-    #Escape punctuation
+        working_sentence = re.sub(r'[a-z]+(' + split_text_char + r'[\n])[a-z]+', '', working_sentence)
+    # Escape punctuation
     for punct in punctuation_patterns:
         working_sentence = re.sub(punct, r" \g<0> ", working_sentence)
-    #Split at any split_characters
+    # Split at any split_characters
     working_sentence = re.sub(split_characters, delimiter_token, working_sentence)
-    list_of_token_strings = [x.strip(" ") for x in working_sentence.split(delimiter_token) if x.strip(" ") !=""]
-    previous = Token(0,0,raw_input_sentence, SOS=True)
+    list_of_token_strings = [x.strip(" ") for x in working_sentence.split(delimiter_token) if x.strip(" ") != ""]
+    previous = Token(0, 0, raw_input_sentence, SOS=True)
     list_of_tokens = [previous]
     for token in list_of_token_strings:
         start_pos = raw_input_sentence.find(token)
-        end_pos = start_pos+len(token)
-        new_token = Token(start_pos,end_pos,raw_input_sentence)
+        end_pos = start_pos + len(token)
+        new_token = Token(start_pos, end_pos, raw_input_sentence)
         list_of_tokens.append(new_token)
-        previous.next_token=new_token
-        new_token.previous_token=previous
-        previous=new_token
+        previous.next_token = new_token
+        new_token.previous_token = previous
+        previous = new_token
     if previous.SOS != True:
         eos = Token(len(raw_input_sentence), len(raw_input_sentence), raw_input_sentence, EOS=True)
-        previous.next_token=eos
+        previous.next_token = eos
         eos.previous_token = previous
         list_of_tokens.append(eos)
     return list_of_tokens
+
 
 def untokenize(token_list):
     """
@@ -306,16 +312,16 @@ def untokenize(token_list):
         raise TypeError("Expected to recieve list of tokens. List of {} passed instead".format(type(token_list[0])))
     startpos = 0
     endpos = len(token_list)
-    if len(token_list)<3:
+    if len(token_list) < 3:
         return (" ".join([token.get() for token in token_list])).strip(" ")
     if token_list[0] == "<SOS>":
-        startpos=1
-    if token_list[-1]== "<EOS>":
+        startpos = 1
+    if token_list[-1] == "<EOS>":
         endpos = -1
     punct = "!:?.;,\n"
     final_string = ""
     for token in token_list[startpos:endpos]:
         if not token.get() in punct:
-            final_string+=" "
-        final_string+=token.get()
+            final_string += " "
+        final_string += token.get()
     return final_string.strip(" ")

@@ -5,7 +5,7 @@ import os, sys
 from .normalization import *
 from ..core.structures import Document, Sentence, untokenize
 
-test_case_folder = os.path.join(os.path.dirname(__file__),"../test_cases/")
+test_case_folder = os.path.join(os.path.dirname(__file__), "../test_cases/")
 
 def test_spell_correction():
     cases = ['i ate a bsnana', 'okaaaaay my friind', 'this is goood', 'yaaaaaaaaaaaaaay']

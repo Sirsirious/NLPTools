@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('../')
+sys.path.append('../../')
 from ..core.structures import Token
 
 class AbstractStemmer:

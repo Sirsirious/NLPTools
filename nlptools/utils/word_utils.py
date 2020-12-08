@@ -4,8 +4,9 @@ import numpy as np
 from .functions import sigmoid
 
 
-dict_directory = os.path.join(os.path.dirname(__file__),"../preloaded/dictionaries/lemmas/irregular_noun_dict.p")
-words_list_directory = os.path.join(os.path.dirname(__file__),"../preloaded/lists/words/words_alpha.txt")
+dict_directory = os.path.join(os.path.dirname(__file__),
+                              "../preloaded/dictionaries/lemmas/irregular_noun_dict.p")
+words_list_directory = os.path.join(os.path.dirname(__file__), "../preloaded/lists/words/words_alpha.txt")
 
 def inflect_noun_singular(word):
     irregular_dict = pickle.load(open(dict_directory,'rb'))

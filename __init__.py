@@ -1,9 +1,7 @@
-import sys
-
-from .core.structures import Document
-from .preprocessing.tagging import MLTagger
-from .preprocessing.stemming import PorterStemmer
-from .preprocessing.lemmatization import DictionaryLemmatizer
+from nlptools.core import Document
+from nlptools.preprocessing.tagging import MLTagger
+from nlptools.preprocessing.stemming import PorterStemmer
+from nlptools.preprocessing import DictionaryLemmatizer
 
 def process(raw_document, pipeline = ['sentencize','pos','lemmatization']):
     document = raw_document
