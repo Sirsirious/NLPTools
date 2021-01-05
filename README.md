@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/Sirsirious/NLPTools.svg?branch=master)](https://travis-ci.com/Sirsirious/NLPTools)
+
 # [nlptools] Python NLP Tools
 > A straightforward Natural Language Processing Toolbox
 
