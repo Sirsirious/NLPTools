@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/Sirsirious/NLPTools.svg?branch=master)](https://travis-ci.com/Sirsirious/NLPTools)
+[![codecov](https://codecov.io/gh/Sirsirious/NLPTools/branch/master/graph/badge.svg?token=YKCP2INQIR)](https://codecov.io/gh/Sirsirious/NLPTools)
 
 # [nlptools] Python NLP Tools
 > A straightforward Natural Language Processing Toolbox
