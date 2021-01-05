@@ -1,7 +1,8 @@
 from pytest import raises
 from ..core.structures import Document, Sentence
 import os
-from nlptools.preprocessing.featurization import *
+from pathlib import Path
+from .featurization import *
 
 EXAMPLE_DOCUMENT="This is an example document made out of many sentences. This is the second sentence. This is the third sentence. Finally, another sentence with another another is. Very good to have some interesting sentences, isn't it? Adding another sentence can be tedious, but it is necessary. And, finally, another one! Should I continue? Maybe it is important that I keep adding sentences for testing. Good that you feel it amazing!"
 
@@ -65,14 +66,14 @@ def test_fit_none():
     raises(TypeError, tfidf.fit_transform, doc)
 
 def test_save_tfidf():
-    file = os.path.join(os.path.dirname(__file__), "../../test_cases/tfidf_test.p")
+    file = str(Path(__file__).parents[1])+"/test_cases/tfidf_test.p"
     document = Document(EXAMPLE_DOCUMENT)
     tfidf = Tfidf(lower_case = True)
     tfidf.fit(document)
     tfidf.save_to_file(file)
 
 def test_load_file():
-    file = os.path.join(os.path.dirname(__file__), "../../test_cases/tfidf_test.p")
+    file = str(Path(__file__).parents[1])+"/test_cases/tfidf_test.p"
     test_save_tfidf()
     tfidf = Tfidf()
     tfidf.load_from_file(file)

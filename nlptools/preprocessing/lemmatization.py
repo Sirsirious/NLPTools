@@ -1,6 +1,6 @@
 import pickle, os
 
-from nlptools.utils.word_utils import inflect_noun_singular
+from ..utils.word_utils import inflect_noun_singular
 
 class AbstractLemmatizer:
     def lemmatize():
